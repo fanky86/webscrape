@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from rich import print as cetak
 from rich import print as prints
 from rich.panel import Panel as nel
-
+from rich.panel import Panel 
 done = False
 results = []
 
