@@ -175,13 +175,13 @@ class get_data_web:
                 style=f"{color_panel}",
             )
         )
-        prints(f"""{P2}[Head]{H2}  %s""" % (head),style=f"{color_panel}")
+        prints(f"""{P2}[Head]{H2}  %s""" % (head))
         
-        prints(f"""{P2}[Data]{H2}  %s""" % (data), style=f"{color_panel}")
+        prints(f"""{P2}[Data]{H2}  %s""" % (data))
         
-        prints(f"""{P2}[Coki]{H2}  %s""" % (coki),style=f"{color_panel}")
+        prints(f"""{P2}[Coki]{H2}  %s""" % (coki))
         
-        prints(f"""{P2}[Post]{H2}  %s""" % (post), style=f"{color_panel}")
+        prints(f"""{P2}[Post]{H2}  %s""" % (post))
         
 
     def printing2(self, req, x):
