@@ -1,4 +1,5 @@
 # -----------------------[ DEFF SCRAPT METODE ]--------------------#
+import sys,bs4, requests,rich,datetime
 from bs4 import BeautifulSoup as bs
 from datetime import datetime
 from itertools import count
