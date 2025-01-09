@@ -1,3 +1,20 @@
+# -----------------------[ DEFF SCRAPT METODE ]--------------------#
+from bs4 import BeautifulSoup as bs
+from datetime import datetime
+from itertools import count
+from requests import get
+from bs4 import BeautifulSoup
+from rich import print as cetak
+from rich import print as prints
+from rich.panel import Panel as nel
+
+done = False
+results = []
+
+if "linux" in sys.platform.lower():
+	os.system("clear")
+elif "win" in sys.platform.lower():
+	os.system("cls")
 ###----------[ MENU BOT ]---------- ###
 class botdata:
     def menu(self):
@@ -128,13 +145,13 @@ class get_data_web:
             )
         )
         prints(f"""{P2}[Head]{H2}  %s""" % (head),style=f"{color_panel}")
-        )
+        
         prints(f"""{P2}[Data]{H2}  %s""" % (data), style=f"{color_panel}")
-        )
+        
         prints(f"""{P2}[Coki]{H2}  %s""" % (coki),style=f"{color_panel}")
-        )
+        
         prints(f"""{P2}[Post]{H2}  %s""" % (post), style=f"{color_panel}")
-        )
+        
 
     def printing2(self, req, x):
         head = self.get_head1(req)
