@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup as bs
 from datetime import datetime
 from itertools import count
 from requests import get
+from rich import print as prints
 from bs4 import BeautifulSoup
 from rich import print as cetak
 from rich import print as prints
