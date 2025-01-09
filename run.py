@@ -51,7 +51,7 @@ class botdata:
     def menu(self):
         prints(
             Panel(
-                f"""{P2}[{color_text}01{P2}]. Get Data Web [{color_text}02{P2}]. Spam SMS [{color_text}03{P2}]. Kembali Ke menu""",
+                f"""{P2}[{color_text}01{P2}]. Get Data Web [{color_text}03{P2}]. Kembali Ke menu""",
                 width=60,
                 style=f"{color_panel}",
             )
@@ -94,7 +94,7 @@ class get_data_web:
             )
         )
         self.tanya = console.input(f" {H2}• {P2}pilih menu : ")
-        self.domain = url.split("/")[2]
+        self.domain = url.split("/")[1]
         self.get_form(url)
 
     def get_form(self, url):
