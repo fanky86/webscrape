@@ -1,9 +1,10 @@
 # -----------------------[ DEFF SCRAPT METODE ]--------------------#
-import sys,os
+import sys
 import requests
 import re
 import random
 from bs4 import BeautifulSoup as bs
+from urllib.parse import urlparse
 from rich import print as prints
 from rich.panel import Panel
 from rich.console import Console
@@ -18,18 +19,11 @@ P2 = "[#FFFFFF]"  # PUTIH
 
 # Warna Default
 try:
-    file_color = open("data/theme_color", "r").read()
-    color_text = file_color.split("|")[0]
-    color_panel = file_color.split("|")[1]
+    with open("data/theme_color", "r") as file_color:
+        color_text, color_panel = file_color.read().split("|")
 except FileNotFoundError:
     color_text = H2
     color_panel = H2
-
-# Membersihkan Layar
-if "linux" in sys.platform.lower():
-    os.system("clear")
-elif "win" in sys.platform.lower():
-    os.system("cls")
 
 # -----------------------[ MENU BOT ]--------------------#
 class BotData:
@@ -68,6 +62,16 @@ class GetDataWeb:
             )
         )
         url = console.input(f" {H2}• {P2}Masukkan URL: ")
+        if not self.validate_url(url):
+            prints(
+                Panel(
+                    f"{M2}URL tidak valid. Mohon masukkan URL yang benar!",
+                    width=60,
+                    style=color_panel,
+                )
+            )
+            return
+
         prints(
             Panel(
                 f"{P2}[{color_text}01{P2}]. Source Payload\n[{color_text}02{P2}]. Parsed Payload\n[{color_text}03{P2}]. Source Code Post Requests",
@@ -76,27 +80,43 @@ class GetDataWeb:
             )
         )
         self.option = console.input(f" {H2}• {P2}Pilih Menu: ")
-        self.domain = url.split("/")[2]  # Mendapatkan domain dari URL
+        self.domain = urlparse(url).netloc  # Mendapatkan domain secara aman
         self.get_form(url)
 
+    def validate_url(self, url):
+        try:
+            result = urlparse(url)
+            return all([result.scheme, result.netloc])
+        except:
+            return False
+
     def get_form(self, url):
-        req = self.session.get(url)
-        soup = bs(req.content, "html.parser")
-        for form in soup.find_all("form"):
-            if self.option in ["1", "01"]:
-                self.printing1(req, form)
-            elif self.option in ["2", "02"]:
-                self.printing2(req, form)
-            elif self.option in ["3", "03"]:
-                self.printing3(url, req, form)
-            else:
-                prints(
-                    Panel(
-                        f"{M2}• {P2}Pilih menu yang benar!",
-                        width=60,
-                        style=color_panel,
+        try:
+            req = self.session.get(url)
+            soup = bs(req.content, "html.parser")
+            for form in soup.find_all("form"):
+                if self.option in ["1", "01"]:
+                    self.printing1(req, form)
+                elif self.option in ["2", "02"]:
+                    self.printing2(req, form)
+                elif self.option in ["3", "03"]:
+                    self.printing3(url, req, form)
+                else:
+                    prints(
+                        Panel(
+                            f"{M2}• {P2}Pilih menu yang benar!",
+                            width=60,
+                            style=color_panel,
+                        )
                     )
+        except requests.exceptions.RequestException as e:
+            prints(
+                Panel(
+                    f"{M2}Gagal mengambil data: {str(e)}",
+                    width=60,
+                    style=color_panel,
                 )
+            )
 
     def get_head(self, req):
         headers = req.headers
