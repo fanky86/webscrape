@@ -35,11 +35,11 @@ console = Console()
 
 # ------------------[ MODULE COLORS ]-------------------#
 M2 = "[#FF0000]"  # MERAH
-H2 = "[#00FF00]"  # HIJAU
+#H2 = "[#00FF00]"  # HIJAU
 K2 = "[#FFFF00]"  # KUNING
 B2 = "[#00C8FF]"  # BIRU
 P2 = "[#FFFFFF]"  # PUTIH
-U2 = "[#AF00FF]"  # UNGU
+H2 = "[#AF00FF]"  # UNGU
 O2 = "[#FF8F00]"  # ORANGE
 
 # Warna Default
