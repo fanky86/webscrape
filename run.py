@@ -35,12 +35,37 @@ console = Console()
 
 # ------------------[ MODULE COLORS ]-------------------#
 M2 = "[#FF0000]"  # MERAH
-#H2 = "[#00FF00]"  # HIJAU
+H2 = "[#00FF00]"  # HIJAU
 K2 = "[#FFFF00]"  # KUNING
 B2 = "[#00C8FF]"  # BIRU
 P2 = "[#FFFFFF]"  # PUTIH
-H2 = "[#AF00FF]"  # UNGU
+U2 = "[#AF00FF]"  # UNGU
 O2 = "[#FF8F00]"  # ORANGE
+try:
+    file_color = open("data/theme_color", "r").read()
+    color_text = file_color.split("|")[0]
+    color_panel = file_color.split("|")[1]
+except:
+    color_text = "[#00FF00]"
+    W1 = random.choice([M2, H2, K2])
+    W2 = random.choice([K2, M2, K2])
+    W3 = random.choice([H2, K2, M2])
+    color_panel = "#00FF00"
+    color_ok = "#00FF00"
+    color_cp = "#FFFF00"
+try:
+    color_table = open("data/theme_color", "r").read()
+except FileNotFoundError:
+    color_table = "#00FF00"
+#------------[ INDICATION ]---------------#
+P = '\x1b[1;97m' # PUTIH
+M = '\x1b[1;91m' # MERAH
+H = '\x1b[1;92m' # HIJAU
+K = '\x1b[1;93m' # KUNING
+B = '\x1b[1;94m' # BIRU
+U = '\x1b[1;95m' # UNGU
+O = '\x1b[1;96m' # BIRU MUDA
+N = '\x1b[0m'	# WARNA MATI
 
 # Warna Default
 try:
