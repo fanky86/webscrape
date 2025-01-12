@@ -6,7 +6,7 @@ from itertools import count
 from requests import get
 from rich import print as prints
 from bs4 import BeautifulSoup
-from rich.panel import Panel as nel
+from rich.panel import Panel
 from rich.console import Console
 
 console = Console()
