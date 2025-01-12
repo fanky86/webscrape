@@ -10,10 +10,10 @@ from rich.console import Console
 console = Console()
 
 # ------------------[ MODULE COLORS ]-------------------#
-M2 = "[red]"    # MERAH
-H2 = "[green]"  # HIJAU
-K2 = "[yellow]" # KUNING
-P2 = "[white]"  # PUTIH
+M2 = "[rgb(255,0,0)]"    # MERAH
+H2 = "[bold [rgb(0,255,0)]]"  # HIJAU TEBAL
+K2 = "[rgb(255,255,0)]"  # KUNING
+P2 = "[rgb(255,255,255)]" # PUTIH
 
 # Warna Default
 try:
