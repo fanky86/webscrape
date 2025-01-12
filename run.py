@@ -1,12 +1,15 @@
 # -----------------------[ DEFF SCRAPT METODE ]--------------------#
-import sys,os
-import requests
-import re
-import random
 from bs4 import BeautifulSoup as bs
+from datetime import datetime
+from itertools import count
+from requests import get
+from bs4 import BeautifulSoup
+from rich import print as cetak
 from rich import print as prints
-from rich.panel import Panel
-from rich.console import Console
+from rich.panel import Panel as nel
+
+done = False
+results = []
 
 console = Console()
 
