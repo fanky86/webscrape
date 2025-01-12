@@ -11,7 +11,7 @@ console = Console()
 
 # ------------------[ MODULE COLORS ]-------------------#
 M2 = "[rgb(255,0,0)]"    # MERAH
-H2 = "[bold [rgb(0,255,0)]]"  # HIJAU TEBAL
+H2 = "[rgb(0,255,0)]"    # HIJAU
 K2 = "[rgb(255,255,0)]"  # KUNING
 P2 = "[rgb(255,255,255)]" # PUTIH
 
