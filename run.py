@@ -1,5 +1,5 @@
 # -----------------------[ DEFF SCRAPT METODE ]--------------------#
-import sys
+import sys,os
 import requests
 import re
 import random
