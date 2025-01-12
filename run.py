@@ -1,8 +1,6 @@
 # -----------------------[ DEFF SCRAPT METODE ]--------------------#
 import sys
 import requests
-import re
-import random
 from bs4 import BeautifulSoup as bs
 from urllib.parse import urlparse
 from rich import print as prints
@@ -12,15 +10,19 @@ from rich.console import Console
 console = Console()
 
 # ------------------[ MODULE COLORS ]-------------------#
-M2 = "[#FF0000]"  # MERAH
-H2 = "[#00FF00]"  # HIJAU
-K2 = "[#FFFF00]"  # KUNING
-P2 = "[#FFFFFF]"  # PUTIH
+M2 = "[red]"    # MERAH
+H2 = "[green]"  # HIJAU
+K2 = "[yellow]" # KUNING
+P2 = "[white]"  # PUTIH
 
 # Warna Default
 try:
     with open("data/theme_color", "r") as file_color:
         color_text, color_panel = file_color.read().split("|")
+        if color_text.startswith("#"):
+            color_text = color_text.replace("#", "")  # Menghapus tanda '#' jika ada
+        if color_panel.startswith("#"):
+            color_panel = color_panel.replace("#", "")  # Menghapus tanda '#' jika ada
 except FileNotFoundError:
     color_text = H2
     color_panel = H2
@@ -161,45 +163,6 @@ class GetDataWeb:
         prints(f"{P2}[DATA]{H2} {data}")
         prints(f"{P2}[COOKIES]{H2} {cookies}")
         prints(f"{P2}[POST URL]{H2} {post_url}")
-
-    def printing2(self, req, form):
-        headers = self.get_head(req)
-        data = self.get_data(form)
-        post_url = self.get_post_url(form)
-        cookies = self.session.cookies.get_dict()
-
-        print("\n\n[PARSED PAYLOAD]\n")
-        print("headers = {")
-        for key, value in headers.items():
-            print(f"    '{key}': '{value}',")
-        print("}")
-        print("data = {")
-        for key, value in data.items():
-            print(f"    '{key}': '{value}',")
-        print("}")
-        print("cookies = {")
-        for key, value in cookies.items():
-            print(f"    '{key}': '{value}',")
-        print("}")
-        print(f"post_url = '{post_url}'")
-
-    def printing3(self, url, req, form):
-        headers = self.get_head(req)
-        data = self.get_data(form)
-        post_url = self.get_post_url(form)
-
-        print("\n\n[SOURCE CODE POST REQUESTS]\n")
-        print(f"url = '{url}'")
-        print("headers = {")
-        for key, value in headers.items():
-            print(f"    '{key}': '{value}',")
-        print("}")
-        print("data = {")
-        for key, value in data.items():
-            print(f"    '{key}': '{value}',")
-        print("}")
-        print(f"post_url = '{post_url}'")
-
 
 # -----------------------[ SYSTEM-CONTROL ]--------------------#
 if __name__ == "__main__":
