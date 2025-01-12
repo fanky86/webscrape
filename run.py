@@ -1,8 +1,9 @@
 # -----------------------[ DEFF SCRAPT METODE ]--------------------#
 import sys
 import requests
+import re
+import random
 from bs4 import BeautifulSoup as bs
-from urllib.parse import urlparse
 from rich import print as prints
 from rich.panel import Panel
 from rich.console import Console
@@ -10,22 +11,25 @@ from rich.console import Console
 console = Console()
 
 # ------------------[ MODULE COLORS ]-------------------#
-M2 = "[rgb(255,0,0)]"    # MERAH
-H2 = "[rgb(0,255,0)]"    # HIJAU
-K2 = "[rgb(255,255,0)]"  # KUNING
-P2 = "[rgb(255,255,255)]" # PUTIH
+M2 = "[#FF0000]"  # MERAH
+H2 = "[#00FF00]"  # HIJAU
+K2 = "[#FFFF00]"  # KUNING
+P2 = "[#FFFFFF]"  # PUTIH
 
 # Warna Default
 try:
-    with open("data/theme_color", "r") as file_color:
-        color_text, color_panel = file_color.read().split("|")
-        if color_text.startswith("#"):
-            color_text = color_text.replace("#", "")  # Menghapus tanda '#' jika ada
-        if color_panel.startswith("#"):
-            color_panel = color_panel.replace("#", "")  # Menghapus tanda '#' jika ada
+    file_color = open("data/theme_color", "r").read()
+    color_text = file_color.split("|")[0]
+    color_panel = file_color.split("|")[1]
 except FileNotFoundError:
     color_text = H2
     color_panel = H2
+
+# Membersihkan Layar
+if "linux" in sys.platform.lower():
+    os.system("clear")
+elif "win" in sys.platform.lower():
+    os.system("cls")
 
 # -----------------------[ MENU BOT ]--------------------#
 class BotData:
@@ -64,16 +68,6 @@ class GetDataWeb:
             )
         )
         url = console.input(f" {H2}• {P2}Masukkan URL: ")
-        if not self.validate_url(url):
-            prints(
-                Panel(
-                    f"{M2}URL tidak valid. Mohon masukkan URL yang benar!",
-                    width=60,
-                    style=color_panel,
-                )
-            )
-            return
-
         prints(
             Panel(
                 f"{P2}[{color_text}01{P2}]. Source Payload\n[{color_text}02{P2}]. Parsed Payload\n[{color_text}03{P2}]. Source Code Post Requests",
@@ -82,43 +76,27 @@ class GetDataWeb:
             )
         )
         self.option = console.input(f" {H2}• {P2}Pilih Menu: ")
-        self.domain = urlparse(url).netloc  # Mendapatkan domain secara aman
+        self.domain = url.split("/")[2]  # Mendapatkan domain dari URL
         self.get_form(url)
 
-    def validate_url(self, url):
-        try:
-            result = urlparse(url)
-            return all([result.scheme, result.netloc])
-        except:
-            return False
-
     def get_form(self, url):
-        try:
-            req = self.session.get(url)
-            soup = bs(req.content, "html.parser")
-            for form in soup.find_all("form"):
-                if self.option in ["1", "01"]:
-                    self.printing1(req, form)
-                elif self.option in ["2", "02"]:
-                    self.printing2(req, form)
-                elif self.option in ["3", "03"]:
-                    self.printing3(url, req, form)
-                else:
-                    prints(
-                        Panel(
-                            f"{M2}• {P2}Pilih menu yang benar!",
-                            width=60,
-                            style=color_panel,
-                        )
+        req = self.session.get(url)
+        soup = bs(req.content, "html.parser")
+        for form in soup.find_all("form"):
+            if self.option in ["1", "01"]:
+                self.printing1(req, form)
+            elif self.option in ["2", "02"]:
+                self.printing2(req, form)
+            elif self.option in ["3", "03"]:
+                self.printing3(url, req, form)
+            else:
+                prints(
+                    Panel(
+                        f"{M2}• {P2}Pilih menu yang benar!",
+                        width=60,
+                        style=color_panel,
                     )
-        except requests.exceptions.RequestException as e:
-            prints(
-                Panel(
-                    f"{M2}Gagal mengambil data: {str(e)}",
-                    width=60,
-                    style=color_panel,
                 )
-            )
 
     def get_head(self, req):
         headers = req.headers
@@ -163,6 +141,45 @@ class GetDataWeb:
         prints(f"{P2}[DATA]{H2} {data}")
         prints(f"{P2}[COOKIES]{H2} {cookies}")
         prints(f"{P2}[POST URL]{H2} {post_url}")
+
+    def printing2(self, req, form):
+        headers = self.get_head(req)
+        data = self.get_data(form)
+        post_url = self.get_post_url(form)
+        cookies = self.session.cookies.get_dict()
+
+        print("\n\n[PARSED PAYLOAD]\n")
+        print("headers = {")
+        for key, value in headers.items():
+            print(f"    '{key}': '{value}',")
+        print("}")
+        print("data = {")
+        for key, value in data.items():
+            print(f"    '{key}': '{value}',")
+        print("}")
+        print("cookies = {")
+        for key, value in cookies.items():
+            print(f"    '{key}': '{value}',")
+        print("}")
+        print(f"post_url = '{post_url}'")
+
+    def printing3(self, url, req, form):
+        headers = self.get_head(req)
+        data = self.get_data(form)
+        post_url = self.get_post_url(form)
+
+        print("\n\n[SOURCE CODE POST REQUESTS]\n")
+        print(f"url = '{url}'")
+        print("headers = {")
+        for key, value in headers.items():
+            print(f"    '{key}': '{value}',")
+        print("}")
+        print("data = {")
+        for key, value in data.items():
+            print(f"    '{key}': '{value}',")
+        print("}")
+        print(f"post_url = '{post_url}'")
+
 
 # -----------------------[ SYSTEM-CONTROL ]--------------------#
 if __name__ == "__main__":
