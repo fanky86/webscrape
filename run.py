@@ -1,11 +1,9 @@
 # -----------------------[ DEFF SCRAPT METODE ]--------------------#
-import sys, bs4, requests, rich, datetime, os, random
+import sys, bs4, requests, rich, datetime, os, random, re
 from bs4 import BeautifulSoup as bs
 from datetime import datetime
 from itertools import count
-from requests import get
 from rich import print as prints
-from bs4 import BeautifulSoup
 from rich.panel import Panel
 from rich.console import Console
 
@@ -23,75 +21,72 @@ U2 = "[#AF00FF]"  # UNGU
 O2 = "[#FF8F00]"  # ORANGE
 try:
     file_color = open("data/theme_color", "r").read()
-    color_text = file_color.split("|")[0]
-    color_panel = file_color.split("|")[1]
+    color_text, color_panel = file_color.split("|")[:2]
 except:
     color_text = "[#00FF00]"
-    W1 = random.choice([M2, H2, K2])
-    W2 = random.choice([K2, M2, K2])
-    W3 = random.choice([H2, K2, M2])
     color_panel = "#00FF00"
-    color_ok = "#00FF00"
-    color_cp = "#FFFF00"
+
 try:
     color_table = open("data/theme_color", "r").read()
 except FileNotFoundError:
     color_table = "#00FF00"
 
-
 if "linux" in sys.platform.lower():
     os.system("clear")
 elif "win" in sys.platform.lower():
     os.system("cls")
-###----------[ MENU BOT ]---------- ###
+
+def banner():
+    Console().print(
+        Panel(
+            """
+[bold red]███████████████████████ [bold yellow]NAME  : [bold green]FANKY 
+[bold red]███████████████████████ [bold yellow]Githb : [bold green]github.com/fanky86  
+[bold red]███████████████████████ [bold yellow]scrip : [bold green]scrapeing website 
+[bold white]███████████████████████          
+[bold white]███████████████████████          
+[bold white]███████████████████████ 
+[bold white]""",
+            width=60,
+            style=f"{color_panel}",
+        )
+    )
+
+# ----------[ MENU BOT ]---------- #
 class botdata:
     def menu(self):
+        banner()
         prints(
             Panel(
-                f"""{P2}[{color_text}01{P2}]. Get Data Web [{color_text}03{P2}]. Kembali Ke menu""",
+                f"""{P2}[{color_text}01{P2}].Get Data Web""",
                 width=60,
                 style=f"{color_panel}",
             )
         )
         menu = console.input(f" {H2}• {P2}pilih menu : ")
         if menu in ["01", "1"]:
-            get_data_web().__init__()
-        elif menu in ["02", "2"]:
-            spam()
-        elif menu in ["03", "3"]:
-            back()
+            get_data_web()
         else:
             exit(
                 prints(
-                    Panel(
-                        f"""{M2}🙏 Masukan Yang Bener Tolol""",
-                        width=60,
-                        style=f"{color_panel}",
-                    )
+                    Panel(f"{M2}🙏 Masukan Yang Bener Tolol", width=60, style=f"{color_panel}")
                 )
             )
-
 
 class get_data_web:
     def __init__(self):
         self.xyz = requests.Session()
-        prints(
-            Panel(
-                f"""{H2}masukan url/link yang mau di source code""",
-                width=60,
-                style=f"{color_panel}",
-            )
-        )
+        prints(Panel(f"{H2}Masukkan URL yang ingin diambil source code-nya", width=60, style=f"{color_panel}"))
         url = console.input(f" {H2}• {P2}Masukan URL : ")
         prints(
             Panel(
-                f"""{P2}[{color_text}01{P2}].Source Payload	[{color_text}02{P2}].Parsed Payload	\n[{color_text}03{P2}].Source Code Post Requests""",
+                f"""{P2}[{color_text}01{P2}].Source Payload [{color_text}02{P2}].Parsed Payload [{color_text}03{P2}].Source Code Post Requests""",
                 width=60,
                 style=f"{color_panel}",
             )
         )
         self.tanya = console.input(f" {H2}• {P2}pilih menu : ")
-        self.domain = url.split("/")[1]  # Extract domain from URL
+        self.domain = url.split('/')[2]  # Memperbaiki ekstraksi domain
         self.get_form(url)
 
     def get_form(self, url):
@@ -110,52 +105,23 @@ class get_data_web:
     def get_head1(self, req):
         data = {}
         head = req.headers
-        usls = [
-            "cookie",
-            "set-cookie",
-            "report-to",
-            "expires",
-            "x-fb-debug",
-            "date",
-            "last-modified",
-            "etag",
-        ]
-        for x, y in zip(head.keys(), head.values()):
-            try:
-                if x.lower() in usls:
-                    continue
-                else:
-                    data.update({x: y})
-            except Exception as e:
-                continue
+        usls = ["cookie", "set-cookie", "report-to", "expires", "x-fb-debug", "date", "last-modified", "etag"]
+        for x, y in head.items():
+            if x.lower() not in usls:
+                data[x] = y
         return data
 
     def get_data1(self, form):
-        data = {}
-        for y in form.find_all("input"):
-            try:
-                data.update({y["name"]: y["value"]})
-            except Exception as e:
-                continue
-        return data
+        return {y["name"]: y.get("value", "") for y in form.find_all("input") if "name" in y.attrs}
 
     def get_data2(self, form):
-        data = []
-        for y in form.find_all("input"):
-            try:
-                data.append(y)
-            except Exception as e:
-                continue
-        return data
+        return [y for y in form.find_all("input")]
 
     def get_post1(self, form):
-        z = form["action"]
-        if "https://" + self.domain in z:
+        z = form.get("action", "")
+        if z.startswith(("https://", "http://")):
             return z
-        elif "http://" + self.domain in z:
-            return z
-        else:
-            return "https://%s%s" % (self.domain, z)
+        return f"https://{self.domain}{z}"
 
     def printing1(self, req, x):
         head = self.get_head1(req)
@@ -163,25 +129,12 @@ class get_data_web:
         post = self.get_post1(x)
         coki = self.xyz.cookies.get_dict()
         
-        # Menampilkan informasi dengan benar
-        prints(
-            Panel(f"""{P2}[Source Payload]{P2}""", width=80, style=f"{color_panel}")
-        )
-        
-        # Memperbaiki output untuk host agar tampil sesuai dengan domain yang didapat
-        prints(
-            Panel(
-                f"""{P2}[HOST]{H2}  {self.domain}""",  # Menampilkan domain dengan benar
-                width=80,
-                style=f"{color_panel}",
-            )
-        )
-        
-        # Menampilkan header, data, cookies dan post dengan warna dan format yang sesuai
-        prints(f"""{P2}[Head]{H2}  {head}""")
-        prints(f"""{P2}[Data]{H2}  {data}""")
-        prints(f"""{P2}[Coki]{H2}  {coki}""")
-        prints(f"""{P2}[Post]{H2}  {post}""")
+        prints(Panel(f"{P2}[Source Payload]", width=80, style=f"{color_panel}"))
+        prints(Panel(f"{P2}[HOST]{H2} {self.domain}", width=80, style=f"{color_panel}"))
+        prints(f"{P2}[Head]{H2} {head}")
+        prints(f"{P2}[Data]{H2} {data}")
+        prints(f"{P2}[Coki]{H2} {coki}")
+        prints(f"{P2}[Post]{H2} {post}")
 
     def printing2(self, req, x):
         head = self.get_head1(req)
@@ -189,76 +142,42 @@ class get_data_web:
         post = self.get_post1(x)
         coki = self.xyz.cookies.get_dict()
         
-        print("\n\n[PARSED PAYLOAD]\n")
-        print("head = {")
-        for x, y in zip(head.keys(), head.values()):
-            print("    %s%s: %s" % (x, " " * (29 - len(x)), y))
-        print("    }")
-        
-        print("data = {")
-        for x in data:
+        prints("\n\n[PARSED PAYLOAD]\n")
+        prints(f"head = {head}")
+        prints("data = {")
+        for y in data:
             try:
-                if "value" in str(x):
-                    dp = "name=" + re.search("name=(.*?)/>", str(x)).group(1)
-                    fp = re.search('value="(.*?)"', str(dp)).group(1)
-                    print(
-                        "    %s%s: '%s'," % (x["name"], " " * (19 - len(x["name"])), fp)
-                    )
-                elif "name" in str(x):
-                    print("    %s%s: ''," % (x["name"], " " * (19 - len(x["name"]))))
-                else:
-                    continue
-            except Exception as e:
+                name = y.get("name", "")
+                value = y.get("value", "")
+                prints(f"    '{name}': '{value}',")
+            except:
                 continue
-        print("    }")
-        
-        print("cookie = {")
-        for x, y in zip(coki.keys(), coki.values()):
-            print("    %s%s: %s" % (x, " " * (5 - len(x)), y))
-        print("    }")
-        print("next = '%s'" % (post))
-        print(
-            "post = requests.Session().post(next,headers=head,data=data,cookies=cookie)"
-        )
+        prints("}")
+        prints(f"cookie = {coki}")
+        prints(f"next = '{post}'")
+        prints("post = requests.post(next, headers=head, data=data, cookies=cookie)")
 
     def printing3(self, url, req, x):
         head = self.get_head1(req)
         data = self.get_data2(x)
         post = self.get_post1(x)
         
-        print("\n\n[SOURCE CODE POST REQUESTS]\n")
-        print("url  = '%s'" % (url))
-        print("requ = bs(requests.Session().get(url).content,'html.parser')")
-        print("head = {")
-        for x, y in zip(head.keys(), head.values()):
-            print("    %s%s: %s" % (x, " " * (29 - len(x)), y))
-        print("    }")
-        
-        print("data = {")
-        for x in data:
+        prints("\n\n[SOURCE CODE POST REQUESTS]\n")
+        prints(f"url  = '{url}'")
+        prints("requ = bs(requests.get(url).content, 'html.parser')")
+        prints(f"head = {head}")
+        prints("data = {")
+        for y in data:
             try:
-                if "value" in str(x):
-                    dp = "name=" + re.search("name=(.*?)/>", str(x)).group(1)
-                    fp = re.search('value="(.*?)"', str(dp)).group(1)
-                    gp = dp.replace(fp, "(.*?)")
-                    rs = "re.search('%s',str(requ)).group(1)" % (gp)
-                    print(
-                        "    %s%s: %s," % (x["name"], " " * (19 - len(x["name"])), rs)
-                    )
-                elif "name" in str(x):
-                    print("    %s%s: ''," % (x["name"], " " * (19 - len(x["name"]))))
-                else:
-                    continue
-            except Exception as e:
+                name = y.get("name", "")
+                value = y.get("value", "(.*?)")
+                prints(f"    '{name}': '{value}',")
+            except:
                 continue
-        print("    }")
-        
-        print("cookie = requests.Session().cookies.get_dict()")
-        print("next = '%s'" % (post))
-        print(
-            "post = requests.Session().post(next,headers=head,data=data,cookies=cookie)"
-        )
-
+        prints("}")
+        prints("cookie = requests.Session().cookies.get_dict()")
+        prints(f"next = '{post}'")
+        prints("post = requests.post(next, headers=head, data=data, cookies=cookie)")
 
 # -----------------------[ SYSTEM-CONTROL ]--------------------#
 if __name__ == "__main__":
