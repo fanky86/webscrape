@@ -36,7 +36,17 @@ if "linux" in sys.platform.lower():
 elif "win" in sys.platform.lower():
     os.system("cls")
 
+def clear():
+    try:
+        if "linux" in sys.platform.lower():
+            os.system("clear")
+        elif "win" in sys.platform.lower():
+            os.system("cls")
+    except:
+        pass
+        
 def banner():
+    clear()
     Console().print(
         Panel(
             """
