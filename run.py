@@ -42,9 +42,9 @@ def banner():
             """
 [bold red]███████████████████████ [bold yellow]NAME  : [bold green]FANKY 
 [bold red]███████████████████████ [bold yellow]Githb : [bold green]github.com/fanky86  
-[bold red]███████████████████████ [bold yellow]scrip : [bold green]scrapeing website 
+[bold red]███████████████████████ [bold yellow]scrip : [bold green]scraping website 
 [bold white]███████████████████████          
-[bold white]███████████████████████          
+[bold white]███████████████████████      
 [bold white]███████████████████████ 
 [bold white]""",
             width=60,
@@ -181,4 +181,6 @@ class get_data_web:
 
 # -----------------------[ SYSTEM-CONTROL ]--------------------#
 if __name__ == "__main__":
+    try:os.system("git pull")
+    except:pass
     botdata().menu()
